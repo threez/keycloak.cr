@@ -1,10 +1,6 @@
-class Keycloak::UserConsentRepresentation
-  include JSON::Serializable
-  include JSON::Serializable::Unmapped
+require "./base"
 
-  def initialize
-  end
-
+class Keycloak::Representation::UserConsent < Keycloak::Representation::Base
   @[JSON::Field(key: "clientId")]
   property client_id : String?
 

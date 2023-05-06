@@ -1,10 +1,6 @@
-class Keycloak::UserSessionRepresentation
-  include JSON::Serializable
-  include JSON::Serializable::Unmapped
+require "./base"
 
-  def initialize
-  end
-
+class Keycloak::Representation::UserSession < Keycloak::Representation::Base
   @[JSON::Field(key: "id")]
   property id : String?
 

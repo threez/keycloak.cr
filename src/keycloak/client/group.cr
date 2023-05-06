@@ -1,4 +1,4 @@
-class Keycloak::Client
+module Keycloak::GroupClient
   # Returns the number of groups for the realm
   def group_count : Int32
     get_path(url("/groups/count"), "group count", Hash(String, Int32))["count"]
@@ -22,17 +22,17 @@ class Keycloak::Client
              first : Int32? = nil,
              max : Int32? = nil,
              q : String? = nil,
-             search : String? = nil) : Array(GroupRepresentation)
+             search : String? = nil) : Array(Representation::Group)
     path = url("/groups", briefRepresentation: brief, exact: exact,
       first: first, max: max, q: q, search: search)
-    get_path(path, "groups", Array(GroupRepresentation))
+    get_path(path, "groups", Array(Representation::Group))
   end
 
-  def get_group(id : String) : GroupRepresentation
-    get_path(url("/groups/#{id}"), "group", GroupRepresentation)
+  def get_group(id : String) : Representation::Group
+    get_path(url("/groups/#{id}"), "group", Representation::Group)
   end
 
-  def create_group(user : GroupRepresentation, *, parent : String? = nil)
+  def create_group(user : Representation::Group, *, parent : String? = nil)
     path = if parent.nil?
              url("/groups")
            else
@@ -54,8 +54,8 @@ class Keycloak::Client
   def group_members(id : String, *,
                     brief : Bool? = nil,
                     first : Int32? = nil,
-                    max : Int32? = nil) : Array(UserRepresentation)
-    get_path(url("/groups/#{id}/members"), "group members", Array(UserRepresentation))
+                    max : Int32? = nil) : Array(Representation::User)
+    get_path(url("/groups/#{id}/members"), "group members", Array(Representation::User))
   end
 
   def add_user_to_group(*, user_id : String, group_id : String)

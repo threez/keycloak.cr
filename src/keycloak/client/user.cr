@@ -1,4 +1,4 @@
-class Keycloak::Client
+module Keycloak::UserClient
   # Returns the number of users that match the given criteria.
   # It can be called in three different ways:
   #
@@ -32,19 +32,19 @@ class Keycloak::Client
     get_path(url("/users/count"), "user count", Int32)
   end
 
-  def get_user(id : String) : UserRepresentation
-    get_path(url("/users/#{id}"), "user", UserRepresentation)
+  def get_user(id : String) : Representation::User
+    get_path(url("/users/#{id}"), "user", Representation::User)
   end
 
-  def get_user_credentials(id : String) : Array(CredentialRepresentation)
-    get_path(url("/users/#{id}/credentials"), "user credentials", Array(CredentialRepresentation))
+  def get_user_credentials(id : String) : Array(Representation::Credential)
+    get_path(url("/users/#{id}/credentials"), "user credentials", Array(Representation::Credential))
   end
 
   # Set up a new password for the user.
   #
   # * `id` the id of the user
   # * `cred` the new credentials
-  def reset_password(id : String, cred : CredentialRepresentation)
+  def reset_password(id : String, cred : Representation::Credential)
     put_path(url("/users/#{id}/reset-password"), "reset password", cred)
   end
 
@@ -62,11 +62,11 @@ class Keycloak::Client
     put_path(path, "send verify email")
   end
 
-  def create_user(user : UserRepresentation)
+  def create_user(user : Representation::User)
     post_path(url("/users"), "create user", user)
   end
 
-  def update_user(user : UserRepresentation)
+  def update_user(user : Representation::User)
     put_path(url("/users/#{user.id}"), "update user", user)
   end
 
@@ -84,10 +84,10 @@ class Keycloak::Client
                   brief : Bool? = nil,
                   first : Int32? = nil,
                   max : Int32? = nil,
-                  search : String? = nil) : Array(GroupRepresentation)
+                  search : String? = nil) : Array(Representation::Group)
     path = url("/users/#{id}/groups", briefRepresentation: brief,
       first: first, max: max, search: search)
-    get_path(path, "user", Array(GroupRepresentation))
+    get_path(path, "user", Array(Representation::Group))
   end
 
   # Get users returns a stream of users, filtered according to query parameters.
@@ -120,7 +120,7 @@ class Keycloak::Client
             max : Int32? = nil,
             q : String? = nil,
             search : String? = nil,
-            username : String? = nil) : Array(UserRepresentation)
+            username : String? = nil) : Array(Representation::User)
     path = url("/users",
       briefRepresentation: brief,
       email: email,
@@ -136,13 +136,13 @@ class Keycloak::Client
       q: q,
       search: search,
       username: username)
-    get_path(path, "user", Array(UserRepresentation))
+    get_path(path, "user", Array(Representation::User))
   end
 
   # Get sessions associated with the user
   #
   # * `id` the id of the user
-  def user_sessions(id : String) : UserSessionRepresentation
-    get_path(url("/{realm}/users/{id}/sessions"), "user session", UserSessionRepresentation)
+  def user_sessions(id : String) : Representation::UserSession
+    get_path(url("/{realm}/users/{id}/sessions"), "user session", Representation::UserSession)
   end
 end

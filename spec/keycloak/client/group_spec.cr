@@ -84,7 +84,7 @@ describe Keycloak::Client do
 
   describe "#create_group and #delete_group" do
     it "can create new users and delete them, without parent" do
-      group = Keycloak::GroupRepresentation.new
+      group = Keycloak::Representation::Group.new
       group.name = "A new group"
       KC.create_group(group)
       group.id.should_not be(nil)
@@ -93,7 +93,7 @@ describe Keycloak::Client do
 
     it "can create new users and delete them, with parent" do
       parent_group_id = KC.groups.first.id.not_nil!
-      group = Keycloak::GroupRepresentation.new
+      group = Keycloak::Representation::Group.new
       group.name = "A new group"
       KC.create_group(group, parent: parent_group_id)
       group.id.should_not be(nil)

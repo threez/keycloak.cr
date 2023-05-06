@@ -23,7 +23,7 @@ describe Keycloak::Client do
 
   describe "#create_user and #delete_user" do
     it "can create new users and delete them" do
-      user = Keycloak::UserRepresentation.new
+      user = Keycloak::Representation::User.new
       user.firstname = "Test"
       user.lastname = "User 2"
       user.email = "test2@example.com"
@@ -37,13 +37,13 @@ describe Keycloak::Client do
   describe "#reset_password" do
     it "unknown user" do
       expect_raises Keycloak::NotFoundError do
-        creds = Keycloak::CredentialRepresentation.password("1234")
+        creds = Keycloak::Representation::Credential.password("1234")
         KC.reset_password("501b932e-8f82-4dd2-a3b8-994b6f07c282", creds)
       end
     end
 
     it "can reset password of existing users" do
-      creds = Keycloak::CredentialRepresentation.password("1234")
+      creds = Keycloak::Representation::Credential.password("1234")
       user_id = KC.users(max: 1).first.id.not_nil!
       user_id.should_not eq("")
       KC.reset_password(user_id, creds)

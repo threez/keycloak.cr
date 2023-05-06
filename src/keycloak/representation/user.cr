@@ -1,10 +1,6 @@
-class Keycloak::UserRepresentation
-  include JSON::Serializable
-  include JSON::Serializable::Unmapped
+require "./base"
 
-  def initialize
-  end
-
+class Keycloak::Representation::User < Keycloak::Representation::Base
   @[JSON::Field(key: "access")]
   property access : Hash(String, Bool) { }
 
@@ -12,7 +8,7 @@ class Keycloak::UserRepresentation
   property attributes : Hash(String, Array(String)) { }
 
   @[JSON::Field(key: "clientConsents")]
-  property client_consents : Array(UserConsentRepresentation) { }
+  property client_consents : Array(UserConsent) { }
 
   @[JSON::Field(key: "clientRoles")]
   property client_roles : Hash(String, String) { } # TODO: which type is correct here?
@@ -21,7 +17,7 @@ class Keycloak::UserRepresentation
   property created_timestamp : Time?
 
   @[JSON::Field(key: "credentials")]
-  property credentials : Array(CredentialRepresentation) { }
+  property credentials : Array(Credential) { }
 
   @[JSON::Field(key: "disableableCredentialTypes")]
   property disableable_credential_types : Array(String) { }
@@ -36,7 +32,7 @@ class Keycloak::UserRepresentation
   property enabled : Bool?
 
   @[JSON::Field(key: "federatedIdentities")]
-  property federated_identities : Array(FederatedIdentityRepresentation) { }
+  property federated_identities : Array(FederatedIdentity) { }
 
   @[JSON::Field(key: "federationLink")]
   property federation_link : String?

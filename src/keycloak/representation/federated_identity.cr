@@ -1,10 +1,6 @@
-class Keycloak::FederatedIdentityRepresentation
-  include JSON::Serializable
-  include JSON::Serializable::Unmapped
+require "./base"
 
-  def initialize
-  end
-
+class Keycloak::Representation::FederatedIdentity < Keycloak::Representation::Base
   @[JSON::Field(key: "identityProvider")]
   property identity_provider : String?
 

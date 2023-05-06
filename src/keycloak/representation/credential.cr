@@ -1,7 +1,6 @@
-class Keycloak::CredentialRepresentation
-  include JSON::Serializable
-  include JSON::Serializable::Unmapped
+require "./base"
 
+class Keycloak::Representation::Credential < Keycloak::Representation::Base
   def initialize
     @type = "password"
   end

@@ -1,10 +1,6 @@
-class Keycloak::GroupRepresentation
-  include JSON::Serializable
-  include JSON::Serializable::Unmapped
+require "./base"
 
-  def initialize
-  end
-
+class Keycloak::Representation::Group < Keycloak::Representation::Base
   @[JSON::Field(key: "access")]
   property access : Hash(String, Bool) { }
 
@@ -12,7 +8,7 @@ class Keycloak::GroupRepresentation
   property attributes : Hash(String, Array(String)) { }
 
   @[JSON::Field(key: "clientConsents")]
-  property client_consents : Array(UserConsentRepresentation) { }
+  property client_consents : Array(UserConsent) { }
 
   @[JSON::Field(key: "clientRoles")]
   property client_roles : Hash(String, String) { } # TODO: which type is correct here?
@@ -27,5 +23,5 @@ class Keycloak::GroupRepresentation
   property realm_roles : Array(String) { }
 
   @[JSON::Field(key: "subGroups")]
-  property sub_groups : Array(GroupRepresentation) { }
+  property sub_groups : Array(Group) { }
 end

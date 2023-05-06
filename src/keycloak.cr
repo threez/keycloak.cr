@@ -2,16 +2,39 @@ require "http/client"
 require "oidc"
 
 require "./keycloak/*"
+require "./keycloak/representation/*"
 require "./keycloak/client/*"
 
+# Access the keycloak [admin API](https://www.keycloak.org/docs-api/21.1.1/rest-api/index.html) from Crystal.
+#
+# This package provides a `Keycloak::Client` to manage certain objects
+# in keycloak via the admin API. With this additional functionality, not
+# directly provided can be implemented with ease.
 module Keycloak
   VERSION = "0.1.0"
 
+  # Base for all keycloak errors, simplifies "catch all" handling
   class Error < Exception; end
 
+  # Error that is returned in case of HTTP `404` from the server. This
+  # us used in case the resource is not found on the server side. E.g. user
+  # not found.
   class NotFoundError < Error; end
 
+  # The client has to be used by a correctly configured Keycloak Client.
+  # The client needs to have enabled service account capalibity:
+  #
+  # ![Client Config](https://github.com/threez/keycloak.cr/blob/master/assets/Client.png?raw=true)
+  #
+  # Depending on the desired funcations the respective roles have to
+  # be assigned to the client, in this example the user and grou roles
+  # are maked yellow for easier visibility:
+  #
+  # ![Client Roles](https://github.com/threez/keycloak.cr/blob/master/assets/Roles.png?raw=true)
   class Client
+    include UserClient
+    include GroupClient
+
     DEFAULT_HEADERS = HTTP::Headers{
       "Content-Type" => "application/json",
       "Accept"       => "application/json",
@@ -21,10 +44,17 @@ module Keycloak
     @token : OAuth2::AccessToken?
     @token_valid_until : Time?
 
+    # Create a new client based on the given url, client and secret.
+    #
+    # * `config_url` the url usually of the keycloak config url, usually ends with `".well-known/openid-configuration"`
+    # * `client_id` the id of the client to use
+    # * `client_secret` the secret to authenticate the client
+    #
     def initialize(config_url : String, client_id : String, client_secret : String)
       initialize(OIDC::Client.new(config_url, client_id, client_secret, redirect_uri: "/"))
     end
 
+    # Create a new client using an already existing OIDC client.
     def initialize(@client : OIDC::Client)
       @base = @client.config.issuer.gsub("/realms", "/admin/realms")
     end
