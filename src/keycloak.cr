@@ -40,7 +40,6 @@ module Keycloak
 
     private def post_path(path : String, desc : String, obj)
       with_http_client do |http_client|
-        puts obj.to_json # FIXME: remove later
         res = http_client.post(path, DEFAULT_HEADERS, obj.to_json)
         if res.status_code != 201
           raise Error.new("failed to #{desc} due to: #{res.status}: #{res.body}")
@@ -58,8 +57,8 @@ module Keycloak
       with_http_client do |http_client|
         data = ""
 
+        # if data is nil, don't send anything
         unless obj.nil?
-          puts obj.to_json # FIXME: remove later
           data = obj.to_json
         end
 
