@@ -4,6 +4,8 @@ on:
     branches: [master]
 jobs:
   verify-linux:
+    environment:
+      name: ci
     runs-on: ubuntu-latest
     steps:
       - name: Download source
