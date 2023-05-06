@@ -1,6 +1,6 @@
-# keycloak
+# keycloak [![.github/workflows/ci.yml](https://github.com/threez/oidc.cr/actions/workflows/ci.yml/badge.svg)](https://github.com/threez/oidc.cr/actions/workflows/ci.yml) [![https://threez.github.io/oidc.cr/](https://badgen.net/badge/api/documentation/green)](https://threez.github.io/oidc.cr/)
 
-TODO: Write a description here
+Access the keycloak admin API from Crystal.
 
 ## Installation
 
