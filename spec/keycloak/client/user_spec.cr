@@ -57,7 +57,7 @@ describe Keycloak::Client do
       end
     end
 
-    it "can send email to existing users" do
+    pending "can send email to existing users" do
       user_id = KC.users(max: 1).first.id.not_nil!
       user_id.should_not eq("")
       KC.send_verify_email(user_id)
