@@ -1,4 +1,4 @@
-# keycloak [![.github/workflows/ci.yml](https://github.com/threez/oidc.cr/actions/workflows/ci.yml/badge.svg)](https://github.com/threez/oidc.cr/actions/workflows/ci.yml) [![https://threez.github.io/oidc.cr/](https://badgen.net/badge/api/documentation/green)](https://threez.github.io/oidc.cr/)
+# keycloak [![.github/workflows/ci.yml](https://github.com/threez/keycloak.cr/actions/workflows/ci.yml/badge.svg)](https://github.com/threez/keycloak.cr/actions/workflows/ci.yml) [![https://threez.github.io/keycloak.cr/](https://badgen.net/badge/api/documentation/green)](https://threez.github.io/keycloak.cr/)
 
 Access the keycloak admin API from Crystal.
 
