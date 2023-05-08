@@ -14,6 +14,10 @@ jobs:
       - name: Install development dependencies
         run: shards install
       - name: Run tests
-        run: make lint spec
+        run: |
+          export CONFIG_NAME="${{ vars.CONFIG_NAME }}"
+          export CONFIG_URL="${{ vars.CONFIG_URL }}"
+          export CONFIG_KEY="${{ secrets.CONFIG_KEY }}"
+          make lint spec
       - name: Make sure the files are formatted
         run: crystal tool format --check
