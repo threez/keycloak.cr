@@ -11,7 +11,7 @@ require "./keycloak/client/*"
 # in keycloak via the admin API. With this additional functionality, not
 # directly provided can be implemented with ease.
 module Keycloak
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 
   # Base for all keycloak errors, simplifies "catch all" handling
   class Error < Exception; end

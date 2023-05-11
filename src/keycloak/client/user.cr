@@ -32,8 +32,8 @@ module Keycloak::UserClient
     get_path(url("/users/count"), "user count", Int32)
   end
 
-  def get_user(id : String) : Representation::User
-    get_path(url("/users/#{id}"), "user", Representation::User)
+  def get_user(id : String, klass = Representation::User)
+    get_path(url("/users/#{id}"), "user", klass)
   end
 
   def get_user_credentials(id : String) : Array(Representation::Credential)
@@ -120,7 +120,8 @@ module Keycloak::UserClient
             max : Int32? = nil,
             q : String? = nil,
             search : String? = nil,
-            username : String? = nil) : Array(Representation::User)
+            username : String? = nil,
+            klass = Array(Representation::User))
     path = url("/users",
       briefRepresentation: brief,
       email: email,
@@ -136,7 +137,7 @@ module Keycloak::UserClient
       q: q,
       search: search,
       username: username)
-    get_path(path, "user", Array(Representation::User))
+    get_path(path, "user", klass)
   end
 
   # Get sessions associated with the user
