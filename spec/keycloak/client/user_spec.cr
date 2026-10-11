@@ -30,7 +30,7 @@ describe Keycloak::Client do
       user.username = "testuser-2345"
       KC.create_user(user)
       user.id.should_not be(nil)
-      KC.delete_user(user.id.not_nil!)
+      KC.delete_user(user.id.as(String))
     end
   end
 
@@ -44,7 +44,7 @@ describe Keycloak::Client do
 
     it "can reset password of existing users" do
       creds = Keycloak::Representation::Credential.password("1234")
-      user_id = KC.users(max: 1).first.id.not_nil!
+      user_id = KC.users(max: 1).first.id.as(String)
       user_id.should_not eq("")
       KC.reset_password(user_id, creds)
     end
@@ -58,7 +58,7 @@ describe Keycloak::Client do
     end
 
     pending "can send email to existing users" do
-      user_id = KC.users(max: 1).first.id.not_nil!
+      user_id = KC.users(max: 1).first.id.as(String)
       user_id.should_not eq("")
       KC.send_verify_email(user_id)
     end
