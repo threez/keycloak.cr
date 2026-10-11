@@ -25,6 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `Makefile`, and fixed the `lib/ameba/bin/ameba` build rule to run
   `shards build ameba` explicitly, since ameba 1.7.0 no longer ships a
   `postinstall` hook.
+- Re-resolved `oidc` to its newly tagged `0.1.6` release.
+- The `test` job now only runs on manual `workflow_dispatch`: the entire
+  spec suite requires a real, reachable Keycloak instance at `CONFIG_URL`
+  (there are no pure-unit specs), and that instance isn't reachable from
+  GitHub's hosted runners, so the job failed on every push/PR with no
+  signal about this shard's own code. Run it manually from an environment
+  that can reach the configured Keycloak instance.
 
 ## [0.1.1]
 
