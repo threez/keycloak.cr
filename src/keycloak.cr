@@ -102,58 +102,62 @@ module Keycloak
     end
 
     private def get_path(path : String, object_name : String, klass)
-      obj = nil
       with_http_client do |http_client|
         res = http_client.get(path, DEFAULT_HEADERS)
-        if res.status_code == 200
-          obj = klass.from_json(res.body)
-        elsif res.status_code == 404
+        case res.status_code
+        when 200
+          klass.from_json(res.body)
+        when 404
           raise NotFoundError.new("#{object_name} not found")
         else
           raise Error.new("failed to fetch #{object_name} due to: #{res.status}: #{res.body}")
         end
       end
-      obj.not_nil!
     end
 
-    private def with_http_client(&block : (HTTP::Client) ->)
+    private def with_http_client(&block : (HTTP::Client) -> _)
       with_token do |token|
-        @http_client ||= HTTP::Client.new(uri.hostname.not_nil!, tls: (uri.scheme == "https"))
-        token.authenticate(@http_client.not_nil!)
-        block.call(@http_client.not_nil!)
+        http_client = @http_client ||= begin
+          host = uri.hostname || raise Error.new("invalid issuer url: missing host")
+          HTTP::Client.new(host, tls: (uri.scheme == "https"))
+        end
+        token.authenticate(http_client)
+        block.call(http_client)
       end
     end
 
     private def url(relative_path, **kwargs)
-      String.build do |s|
-        s << @base
-        s << relative_path
+      String.build do |io|
+        io << @base
+        io << relative_path
         args = kwargs.to_h.reject { |_, v| v.nil? }
           .transform_values { |v| [v.to_s] of String }
           .transform_keys(&.to_s)
         if args.size > 0
-          s << "?"
-          s << URI::Params.encode(args)
+          io << "?"
+          io << URI::Params.encode(args)
         end
       end
     end
 
-    private def uri : URI?
+    private def uri : URI
       @uri ||= URI.parse(@client.config.issuer)
     end
 
-    private def with_token(&block : (OAuth2::AccessToken) ->)
-      @token = nil if !@token_valid_until.nil? && Time.local > @token_valid_until.not_nil!
-      @token ||= begin
-        token = @client.get_access_token_using_client_credentials
-        if expires_in = token.expires_in
+    private def with_token(&block : (OAuth2::AccessToken) -> _)
+      if valid_until = @token_valid_until
+        @token = nil if Time.local > valid_until
+      end
+      token = @token ||= begin
+        new_token = @client.get_access_token_using_client_credentials
+        if expires_in = new_token.expires_in
           @token_valid_until = Time.local + Time::Span.new(seconds: expires_in)
         else
           @token_valid_until = Time.local + Time::Span.new(days: 365 * 10) # 10 years
         end
-        token
+        new_token
       end
-      block.call(@token.not_nil!)
+      block.call(token)
     end
   end
 end

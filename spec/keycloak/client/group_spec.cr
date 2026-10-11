@@ -60,25 +60,25 @@ describe Keycloak::Client do
     it "should be able to add and remove users from groups" do
       # get first group
       group = KC.groups.first
-      group_id = group.id.not_nil!
+      group_id = group.id.as(String)
 
       # find all users that are not part of the group
-      members = KC.group_members(group_id).not_nil!.map(&.id).map(&.not_nil!)
+      members = KC.group_members(group_id).map(&.id).map(&.as(String))
       member_size = members.size
       users = KC.users
-      users.reject! { |u| members.includes?(u.id.not_nil!) }
+      users.reject! { |user| members.includes?(user.id.as(String)) }
       users.size.should_not eq(0)
-      user_id = users.first.id.not_nil!
+      user_id = users.first.id.as(String)
 
       # add user to the group
       KC.add_user_to_group(user_id: user_id,
         group_id: group_id)
-      KC.group_members(group_id).not_nil!.size.should eq(member_size + 1)
+      KC.group_members(group_id).size.should eq(member_size + 1)
 
       # remove the user from the group again
       KC.remove_user_from_group(user_id: user_id,
         group_id: group_id)
-      KC.group_members(group_id).not_nil!.size.should eq(member_size)
+      KC.group_members(group_id).size.should eq(member_size)
     end
   end
 
@@ -88,16 +88,16 @@ describe Keycloak::Client do
       group.name = "A new group"
       KC.create_group(group)
       group.id.should_not be(nil)
-      KC.delete_group(group.id.not_nil!)
+      KC.delete_group(group.id.as(String))
     end
 
     it "can create new users and delete them, with parent" do
-      parent_group_id = KC.groups.first.id.not_nil!
+      parent_group_id = KC.groups.first.id.as(String)
       group = Keycloak::Representation::Group.new
       group.name = "A new group"
       KC.create_group(group, parent: parent_group_id)
       group.id.should_not be(nil)
-      KC.delete_group(group.id.not_nil!)
+      KC.delete_group(group.id.as(String))
     end
   end
 end
